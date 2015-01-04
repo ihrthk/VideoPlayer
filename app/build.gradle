@@ -1,6 +1,3 @@
-	
-Patch Set1
-Click to add file comment
 import java.text.SimpleDateFormat	
 
 apply plugin: 'com.android.application'	
