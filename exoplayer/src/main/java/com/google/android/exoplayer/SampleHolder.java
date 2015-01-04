@@ -22,78 +22,78 @@ import java.nio.ByteBuffer;
  */
 public final class SampleHolder {
 
-  /**
-   * Disallows buffer replacement.
-   */
-  public static final int BUFFER_REPLACEMENT_MODE_DISABLED = 0;
+    /**
+     * Disallows buffer replacement.
+     */
+    public static final int BUFFER_REPLACEMENT_MODE_DISABLED = 0;
 
-  /**
-   * Allows buffer replacement using {@link ByteBuffer#allocate(int)}.
-   */
-  public static final int BUFFER_REPLACEMENT_MODE_NORMAL = 1;
+    /**
+     * Allows buffer replacement using {@link ByteBuffer#allocate(int)}.
+     */
+    public static final int BUFFER_REPLACEMENT_MODE_NORMAL = 1;
 
-  /**
-   * Allows buffer replacement using {@link ByteBuffer#allocateDirect(int)}.
-   */
-  public static final int BUFFER_REPLACEMENT_MODE_DIRECT = 2;
+    /**
+     * Allows buffer replacement using {@link ByteBuffer#allocateDirect(int)}.
+     */
+    public static final int BUFFER_REPLACEMENT_MODE_DIRECT = 2;
 
-  public final CryptoInfo cryptoInfo;
+    public final CryptoInfo cryptoInfo;
 
-  /**
-   * A buffer holding the sample data.
-   */
-  public ByteBuffer data;
+    /**
+     * A buffer holding the sample data.
+     */
+    public ByteBuffer data;
 
-  /**
-   * The size of the sample in bytes.
-   */
-  public int size;
+    /**
+     * The size of the sample in bytes.
+     */
+    public int size;
 
-  /**
-   * Flags that accompany the sample. A combination of
-   * {@link android.media.MediaExtractor#SAMPLE_FLAG_SYNC} and
-   * {@link android.media.MediaExtractor#SAMPLE_FLAG_ENCRYPTED}
-   */
-  public int flags;
+    /**
+     * Flags that accompany the sample. A combination of
+     * {@link android.media.MediaExtractor#SAMPLE_FLAG_SYNC} and
+     * {@link android.media.MediaExtractor#SAMPLE_FLAG_ENCRYPTED}
+     */
+    public int flags;
 
-  /**
-   * The time at which the sample should be presented.
-   */
-  public long timeUs;
+    /**
+     * The time at which the sample should be presented.
+     */
+    public long timeUs;
 
-  /**
-   * If true then the sample should be decoded, but should not be presented.
-   */
-  public boolean decodeOnly;
+    /**
+     * If true then the sample should be decoded, but should not be presented.
+     */
+    public boolean decodeOnly;
 
-  private final int bufferReplacementMode;
+    private final int bufferReplacementMode;
 
-  /**
-   * @param bufferReplacementMode Determines the behavior of {@link #replaceBuffer(int)}. One of
-   *     {@link #BUFFER_REPLACEMENT_MODE_DISABLED}, {@link #BUFFER_REPLACEMENT_MODE_NORMAL} and
-   *     {@link #BUFFER_REPLACEMENT_MODE_DIRECT}.
-   */
-  public SampleHolder(int bufferReplacementMode) {
-    this.cryptoInfo = new CryptoInfo();
-    this.bufferReplacementMode = bufferReplacementMode;
-  }
-
-  /**
-   * Attempts to replace {@link #data} with a {@link ByteBuffer} of the specified capacity.
-   *
-   * @param capacity The capacity of the replacement buffer, in bytes.
-   * @return True if the buffer was replaced. False otherwise.
-   */
-  public boolean replaceBuffer(int capacity) {
-    switch (bufferReplacementMode) {
-      case BUFFER_REPLACEMENT_MODE_NORMAL:
-        data = ByteBuffer.allocate(capacity);
-        return true;
-      case BUFFER_REPLACEMENT_MODE_DIRECT:
-        data = ByteBuffer.allocateDirect(capacity);
-        return true;
+    /**
+     * @param bufferReplacementMode Determines the behavior of {@link #replaceBuffer(int)}. One of
+     *                              {@link #BUFFER_REPLACEMENT_MODE_DISABLED}, {@link #BUFFER_REPLACEMENT_MODE_NORMAL} and
+     *                              {@link #BUFFER_REPLACEMENT_MODE_DIRECT}.
+     */
+    public SampleHolder(int bufferReplacementMode) {
+        this.cryptoInfo = new CryptoInfo();
+        this.bufferReplacementMode = bufferReplacementMode;
     }
-    return false;
-  }
+
+    /**
+     * Attempts to replace {@link #data} with a {@link ByteBuffer} of the specified capacity.
+     *
+     * @param capacity The capacity of the replacement buffer, in bytes.
+     * @return True if the buffer was replaced. False otherwise.
+     */
+    public boolean replaceBuffer(int capacity) {
+        switch (bufferReplacementMode) {
+            case BUFFER_REPLACEMENT_MODE_NORMAL:
+                data = ByteBuffer.allocate(capacity);
+                return true;
+            case BUFFER_REPLACEMENT_MODE_DIRECT:
+                data = ByteBuffer.allocateDirect(capacity);
+                return true;
+        }
+        return false;
+    }
 
 }

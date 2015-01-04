@@ -23,14 +23,14 @@ import java.util.UUID;
  */
 public final class MediaFormatHolder {
 
-  /**
-   * The format of the media.
-   */
-  public MediaFormat format;
-  /**
-   * Initialization data for each of the drm schemes supported by the media, keyed by scheme UUID.
-   * Null if the media is not encrypted.
-   */
-  public Map<UUID, byte[]> drmInitData;
+    /**
+     * The format of the media.
+     */
+    public MediaFormat format;
+    /**
+     * Initialization data for each of the drm schemes supported by the media, keyed by scheme UUID.
+     * Null if the media is not encrypted.
+     */
+    public Map<UUID, byte[]> drmInitData;
 
 }

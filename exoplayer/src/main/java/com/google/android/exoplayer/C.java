@@ -20,26 +20,27 @@ package com.google.android.exoplayer;
  */
 public final class C {
 
-  /**
-   * Represents an unknown microsecond time or duration.
-   */
-  public static final long UNKNOWN_TIME_US = -1L;
+    /**
+     * Represents an unknown microsecond time or duration.
+     */
+    public static final long UNKNOWN_TIME_US = -1L;
 
-  /**
-   * The number of microseconds in one second.
-   */
-  public static final long MICROS_PER_SECOND = 1000000L;
+    /**
+     * The number of microseconds in one second.
+     */
+    public static final long MICROS_PER_SECOND = 1000000L;
 
-  /**
-   * Represents an unbounded length of data.
-   */
-  public static final int LENGTH_UNBOUNDED = -1;
+    /**
+     * Represents an unbounded length of data.
+     */
+    public static final int LENGTH_UNBOUNDED = -1;
 
-  /**
-   * The name of the UTF-8 charset.
-   */
-  public static final String UTF8_NAME = "UTF-8";
+    /**
+     * The name of the UTF-8 charset.
+     */
+    public static final String UTF8_NAME = "UTF-8";
 
-  private C() {}
+    private C() {
+    }
 
 }

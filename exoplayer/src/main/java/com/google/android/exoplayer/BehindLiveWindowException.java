@@ -22,12 +22,12 @@ import java.io.IOException;
  */
 public class BehindLiveWindowException extends IOException {
 
-  public BehindLiveWindowException() {
-    super();
-  }
+    public BehindLiveWindowException() {
+        super();
+    }
 
-  public BehindLiveWindowException(String message) {
-    super(message);
-  }
+    public BehindLiveWindowException(String message) {
+        super(message);
+    }
 
 }

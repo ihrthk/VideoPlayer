@@ -21,11 +21,11 @@ package com.google.android.exoplayer.util;
  */
 public interface Clock {
 
-  /**
-   * Returns {@link android.os.SystemClock#elapsedRealtime}.
-   *
-   * @return Elapsed milliseconds since boot.
-   */
-  long elapsedRealtime();
+    /**
+     * Returns {@link android.os.SystemClock#elapsedRealtime}.
+     *
+     * @return Elapsed milliseconds since boot.
+     */
+    long elapsedRealtime();
 
 }

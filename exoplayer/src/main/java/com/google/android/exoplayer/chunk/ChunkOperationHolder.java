@@ -21,14 +21,14 @@ package com.google.android.exoplayer.chunk;
  */
 public final class ChunkOperationHolder {
 
-  /**
-   * The number of {@link MediaChunk}s to retain in a queue.
-   */
-  public int queueSize;
+    /**
+     * The number of {@link MediaChunk}s to retain in a queue.
+     */
+    public int queueSize;
 
-  /**
-   * The chunk.
-   */
-  public Chunk chunk;
+    /**
+     * The chunk.
+     */
+    public Chunk chunk;
 
 }

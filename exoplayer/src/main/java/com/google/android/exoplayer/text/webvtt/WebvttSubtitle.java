@@ -26,74 +26,74 @@ import java.util.Arrays;
  */
 public class WebvttSubtitle implements Subtitle {
 
-  private final String[] cueText;
-  private final long startTimeUs;
-  private final long[] cueTimesUs;
-  private final long[] sortedCueTimesUs;
+    private final String[] cueText;
+    private final long startTimeUs;
+    private final long[] cueTimesUs;
+    private final long[] sortedCueTimesUs;
 
-  /**
-   * @param cueText Text to be displayed during each cue.
-   * @param startTimeUs The start time of the subtitle.
-   * @param cueTimesUs Cue event times, where cueTimesUs[2 * i] and cueTimesUs[(2 * i) + 1] are
-   *     the start and end times, respectively, corresponding to cueText[i].
-   */
-  public WebvttSubtitle(String[] cueText, long startTimeUs, long[] cueTimesUs) {
-    this.cueText = cueText;
-    this.startTimeUs = startTimeUs;
-    this.cueTimesUs = cueTimesUs;
-    this.sortedCueTimesUs = Arrays.copyOf(cueTimesUs, cueTimesUs.length);
-    Arrays.sort(sortedCueTimesUs);
-  }
-
-  @Override
-  public long getStartTime() {
-    return startTimeUs;
-  }
-
-  @Override
-  public int getNextEventTimeIndex(long timeUs) {
-    Assertions.checkArgument(timeUs >= 0);
-    int index = Util.binarySearchCeil(sortedCueTimesUs, timeUs, false, false);
-    return index < sortedCueTimesUs.length ? index : -1;
-  }
-
-  @Override
-  public int getEventTimeCount() {
-    return sortedCueTimesUs.length;
-  }
-
-  @Override
-  public long getEventTime(int index) {
-    Assertions.checkArgument(index >= 0);
-    Assertions.checkArgument(index < sortedCueTimesUs.length);
-    return sortedCueTimesUs[index];
-  }
-
-  @Override
-  public long getLastEventTime() {
-    if (getEventTimeCount() == 0) {
-      return -1;
-    }
-    return sortedCueTimesUs[sortedCueTimesUs.length - 1];
-  }
-
-  @Override
-  public String getText(long timeUs) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    for (int i = 0; i < cueTimesUs.length; i += 2) {
-      if ((cueTimesUs[i] <= timeUs) && (timeUs < cueTimesUs[i + 1])) {
-        stringBuilder.append(cueText[i / 2]);
-      }
+    /**
+     * @param cueText     Text to be displayed during each cue.
+     * @param startTimeUs The start time of the subtitle.
+     * @param cueTimesUs  Cue event times, where cueTimesUs[2 * i] and cueTimesUs[(2 * i) + 1] are
+     *                    the start and end times, respectively, corresponding to cueText[i].
+     */
+    public WebvttSubtitle(String[] cueText, long startTimeUs, long[] cueTimesUs) {
+        this.cueText = cueText;
+        this.startTimeUs = startTimeUs;
+        this.cueTimesUs = cueTimesUs;
+        this.sortedCueTimesUs = Arrays.copyOf(cueTimesUs, cueTimesUs.length);
+        Arrays.sort(sortedCueTimesUs);
     }
 
-    int stringLength = stringBuilder.length();
-    if (stringLength > 0 && stringBuilder.charAt(stringLength - 1) == '\n') {
-      // Adjust the length to remove the trailing newline character.
-      stringLength -= 1;
+    @Override
+    public long getStartTime() {
+        return startTimeUs;
     }
 
-    return stringLength == 0 ? null : stringBuilder.substring(0, stringLength);
-  }
+    @Override
+    public int getNextEventTimeIndex(long timeUs) {
+        Assertions.checkArgument(timeUs >= 0);
+        int index = Util.binarySearchCeil(sortedCueTimesUs, timeUs, false, false);
+        return index < sortedCueTimesUs.length ? index : -1;
+    }
+
+    @Override
+    public int getEventTimeCount() {
+        return sortedCueTimesUs.length;
+    }
+
+    @Override
+    public long getEventTime(int index) {
+        Assertions.checkArgument(index >= 0);
+        Assertions.checkArgument(index < sortedCueTimesUs.length);
+        return sortedCueTimesUs[index];
+    }
+
+    @Override
+    public long getLastEventTime() {
+        if (getEventTimeCount() == 0) {
+            return -1;
+        }
+        return sortedCueTimesUs[sortedCueTimesUs.length - 1];
+    }
+
+    @Override
+    public String getText(long timeUs) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < cueTimesUs.length; i += 2) {
+            if ((cueTimesUs[i] <= timeUs) && (timeUs < cueTimesUs[i + 1])) {
+                stringBuilder.append(cueText[i / 2]);
+            }
+        }
+
+        int stringLength = stringBuilder.length();
+        if (stringLength > 0 && stringBuilder.charAt(stringLength - 1) == '\n') {
+            // Adjust the length to remove the trailing newline character.
+            stringLength -= 1;
+        }
+
+        return stringLength == 0 ? null : stringBuilder.substring(0, stringLength);
+    }
 
 }

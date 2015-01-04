@@ -15,9 +15,9 @@
  */
 package com.google.android.exoplayer.util;
 
-import com.google.android.exoplayer.ParserException;
-
 import android.net.Uri;
+
+import com.google.android.exoplayer.ParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,20 +29,20 @@ import java.io.InputStream;
  */
 public interface ManifestParser<T> {
 
-  /**
-   * Parses a manifest from an {@link InputStream}.
-   *
-   * @param inputStream The input stream to consume.
-   * @param inputEncoding The encoding of the input stream. May be null if the input encoding is
-   *     unknown.
-   * @param contentId The content id to which the manifest corresponds. May be null.
-   * @param baseUri If the manifest contains relative uris, this is the uri they are relative to.
-   *     May be null.
-   * @return The parsed manifest.
-   * @throws IOException If an error occurs reading the data.
-   * @throws ParserException If an error occurs parsing the data.
-   */
-  T parse(InputStream inputStream, String inputEncoding, String contentId, Uri baseUri)
-      throws IOException, ParserException;
+    /**
+     * Parses a manifest from an {@link InputStream}.
+     *
+     * @param inputStream   The input stream to consume.
+     * @param inputEncoding The encoding of the input stream. May be null if the input encoding is
+     *                      unknown.
+     * @param contentId     The content id to which the manifest corresponds. May be null.
+     * @param baseUri       If the manifest contains relative uris, this is the uri they are relative to.
+     *                      May be null.
+     * @return The parsed manifest.
+     * @throws IOException     If an error occurs reading the data.
+     * @throws ParserException If an error occurs parsing the data.
+     */
+    T parse(InputStream inputStream, String inputEncoding, String contentId, Uri baseUri)
+            throws IOException, ParserException;
 
 }

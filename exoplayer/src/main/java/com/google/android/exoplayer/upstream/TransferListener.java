@@ -20,22 +20,22 @@ package com.google.android.exoplayer.upstream;
  */
 public interface TransferListener {
 
-  /**
-   * Invoked when a transfer starts.
-   */
-  void onTransferStart();
+    /**
+     * Invoked when a transfer starts.
+     */
+    void onTransferStart();
 
-  /**
-   * Called incrementally during a transfer.
-   *
-   * @param bytesTransferred The number of bytes transferred since the previous call to this
-   *     method (or if the first call, since the transfer was started).
-   */
-  void onBytesTransferred(int bytesTransferred);
+    /**
+     * Called incrementally during a transfer.
+     *
+     * @param bytesTransferred The number of bytes transferred since the previous call to this
+     *                         method (or if the first call, since the transfer was started).
+     */
+    void onBytesTransferred(int bytesTransferred);
 
-  /**
-   * Invoked when a transfer ends.
-   */
-  void onTransferEnd();
+    /**
+     * Invoked when a transfer ends.
+     */
+    void onTransferEnd();
 
 }

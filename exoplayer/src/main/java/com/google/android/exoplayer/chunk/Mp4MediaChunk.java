@@ -32,121 +32,121 @@ import java.util.UUID;
  */
 public final class Mp4MediaChunk extends MediaChunk {
 
-  private final Extractor extractor;
-  private final boolean maybeSelfContained;
-  private final long sampleOffsetUs;
+    private final Extractor extractor;
+    private final boolean maybeSelfContained;
+    private final long sampleOffsetUs;
 
-  private boolean prepared;
-  private MediaFormat mediaFormat;
-  private Map<UUID, byte[]> psshInfo;
+    private boolean prepared;
+    private MediaFormat mediaFormat;
+    private Map<UUID, byte[]> psshInfo;
 
-  /**
-   * @deprecated Use the other constructor, passing null as {@code psshInfo}.
-   */
-  @Deprecated
-  public Mp4MediaChunk(DataSource dataSource, DataSpec dataSpec, Format format,
-      int trigger, long startTimeUs, long endTimeUs, int nextChunkIndex,
-      Extractor extractor, boolean maybeSelfContained, long sampleOffsetUs) {
-    this(dataSource, dataSpec, format, trigger, startTimeUs, endTimeUs, nextChunkIndex,
-        extractor, null, maybeSelfContained, sampleOffsetUs);
-  }
-
-  /**
-   * @param dataSource A {@link DataSource} for loading the data.
-   * @param dataSpec Defines the data to be loaded.
-   * @param format The format of the stream to which this chunk belongs.
-   * @param trigger The reason for this chunk being selected.
-   * @param startTimeUs The start time of the media contained by the chunk, in microseconds.
-   * @param endTimeUs The end time of the media contained by the chunk, in microseconds.
-   * @param nextChunkIndex The index of the next chunk, or -1 if this is the last chunk.
-   * @param extractor The extractor that will be used to extract the samples.
-   * @param psshInfo Pssh data. May be null if pssh data is present within the stream, meaning it
-   *     can be obtained directly from {@code extractor}, or if no pssh data is required.
-   * @param maybeSelfContained Set to true if this chunk might be self contained, meaning it might
-   *     contain a moov atom defining the media format of the chunk. This parameter can always be
-   *     safely set to true. Setting to false where the chunk is known to not be self contained may
-   *     improve startup latency.
-   * @param sampleOffsetUs An offset to subtract from the sample timestamps parsed by the extractor.
-   */
-  public Mp4MediaChunk(DataSource dataSource, DataSpec dataSpec, Format format,
-      int trigger, long startTimeUs, long endTimeUs, int nextChunkIndex, Extractor extractor,
-      Map<UUID, byte[]> psshInfo, boolean maybeSelfContained, long sampleOffsetUs) {
-    super(dataSource, dataSpec, format, trigger, startTimeUs, endTimeUs, nextChunkIndex);
-    this.extractor = extractor;
-    this.maybeSelfContained = maybeSelfContained;
-    this.sampleOffsetUs = sampleOffsetUs;
-    this.psshInfo = psshInfo;
-  }
-
-  @Override
-  public void seekToStart() {
-    extractor.seekTo(0, false);
-    resetReadPosition();
-  }
-
-  @Override
-  public boolean seekTo(long positionUs, boolean allowNoop) {
-    long seekTimeUs = positionUs + sampleOffsetUs;
-    boolean isDiscontinuous = extractor.seekTo(seekTimeUs, allowNoop);
-    if (isDiscontinuous) {
-      resetReadPosition();
+    /**
+     * @deprecated Use the other constructor, passing null as {@code psshInfo}.
+     */
+    @Deprecated
+    public Mp4MediaChunk(DataSource dataSource, DataSpec dataSpec, Format format,
+                         int trigger, long startTimeUs, long endTimeUs, int nextChunkIndex,
+                         Extractor extractor, boolean maybeSelfContained, long sampleOffsetUs) {
+        this(dataSource, dataSpec, format, trigger, startTimeUs, endTimeUs, nextChunkIndex,
+                extractor, null, maybeSelfContained, sampleOffsetUs);
     }
-    return isDiscontinuous;
-  }
 
-  @Override
-  public boolean prepare() throws ParserException {
-    if (!prepared) {
-      if (maybeSelfContained) {
-        // Read up to the first sample. Once we're there, we know that the extractor must have
-        // parsed a moov atom if the chunk contains one.
+    /**
+     * @param dataSource         A {@link DataSource} for loading the data.
+     * @param dataSpec           Defines the data to be loaded.
+     * @param format             The format of the stream to which this chunk belongs.
+     * @param trigger            The reason for this chunk being selected.
+     * @param startTimeUs        The start time of the media contained by the chunk, in microseconds.
+     * @param endTimeUs          The end time of the media contained by the chunk, in microseconds.
+     * @param nextChunkIndex     The index of the next chunk, or -1 if this is the last chunk.
+     * @param extractor          The extractor that will be used to extract the samples.
+     * @param psshInfo           Pssh data. May be null if pssh data is present within the stream, meaning it
+     *                           can be obtained directly from {@code extractor}, or if no pssh data is required.
+     * @param maybeSelfContained Set to true if this chunk might be self contained, meaning it might
+     *                           contain a moov atom defining the media format of the chunk. This parameter can always be
+     *                           safely set to true. Setting to false where the chunk is known to not be self contained may
+     *                           improve startup latency.
+     * @param sampleOffsetUs     An offset to subtract from the sample timestamps parsed by the extractor.
+     */
+    public Mp4MediaChunk(DataSource dataSource, DataSpec dataSpec, Format format,
+                         int trigger, long startTimeUs, long endTimeUs, int nextChunkIndex, Extractor extractor,
+                         Map<UUID, byte[]> psshInfo, boolean maybeSelfContained, long sampleOffsetUs) {
+        super(dataSource, dataSpec, format, trigger, startTimeUs, endTimeUs, nextChunkIndex);
+        this.extractor = extractor;
+        this.maybeSelfContained = maybeSelfContained;
+        this.sampleOffsetUs = sampleOffsetUs;
+        this.psshInfo = psshInfo;
+    }
+
+    @Override
+    public void seekToStart() {
+        extractor.seekTo(0, false);
+        resetReadPosition();
+    }
+
+    @Override
+    public boolean seekTo(long positionUs, boolean allowNoop) {
+        long seekTimeUs = positionUs + sampleOffsetUs;
+        boolean isDiscontinuous = extractor.seekTo(seekTimeUs, allowNoop);
+        if (isDiscontinuous) {
+            resetReadPosition();
+        }
+        return isDiscontinuous;
+    }
+
+    @Override
+    public boolean prepare() throws ParserException {
+        if (!prepared) {
+            if (maybeSelfContained) {
+                // Read up to the first sample. Once we're there, we know that the extractor must have
+                // parsed a moov atom if the chunk contains one.
+                NonBlockingInputStream inputStream = getNonBlockingInputStream();
+                Assertions.checkState(inputStream != null);
+                int result = extractor.read(inputStream, null);
+                prepared = (result & Extractor.RESULT_NEED_SAMPLE_HOLDER) != 0;
+            } else {
+                // We know there isn't a moov atom. The extractor must have parsed one from a separate
+                // initialization chunk.
+                prepared = true;
+            }
+            if (prepared) {
+                mediaFormat = extractor.getFormat();
+                Map<UUID, byte[]> extractorPsshInfo = extractor.getPsshInfo();
+                if (extractorPsshInfo != null) {
+                    psshInfo = extractorPsshInfo;
+                }
+            }
+        }
+        return prepared;
+    }
+
+    @Override
+    public boolean sampleAvailable() throws ParserException {
+        NonBlockingInputStream inputStream = getNonBlockingInputStream();
+        int result = extractor.read(inputStream, null);
+        return (result & Extractor.RESULT_NEED_SAMPLE_HOLDER) != 0;
+    }
+
+    @Override
+    public boolean read(SampleHolder holder) throws ParserException {
         NonBlockingInputStream inputStream = getNonBlockingInputStream();
         Assertions.checkState(inputStream != null);
-        int result = extractor.read(inputStream, null);
-        prepared = (result & Extractor.RESULT_NEED_SAMPLE_HOLDER) != 0;
-      } else {
-        // We know there isn't a moov atom. The extractor must have parsed one from a separate
-        // initialization chunk.
-        prepared = true;
-      }
-      if (prepared) {
-        mediaFormat = extractor.getFormat();
-        Map<UUID, byte[]> extractorPsshInfo = extractor.getPsshInfo();
-        if (extractorPsshInfo != null) {
-          psshInfo = extractorPsshInfo;
+        int result = extractor.read(inputStream, holder);
+        boolean sampleRead = (result & Extractor.RESULT_READ_SAMPLE) != 0;
+        if (sampleRead) {
+            holder.timeUs -= sampleOffsetUs;
         }
-      }
+        return sampleRead;
     }
-    return prepared;
-  }
 
-  @Override
-  public boolean sampleAvailable() throws ParserException {
-    NonBlockingInputStream inputStream = getNonBlockingInputStream();
-    int result = extractor.read(inputStream, null);
-    return (result & Extractor.RESULT_NEED_SAMPLE_HOLDER) != 0;
-  }
-
-  @Override
-  public boolean read(SampleHolder holder) throws ParserException {
-    NonBlockingInputStream inputStream = getNonBlockingInputStream();
-    Assertions.checkState(inputStream != null);
-    int result = extractor.read(inputStream, holder);
-    boolean sampleRead = (result & Extractor.RESULT_READ_SAMPLE) != 0;
-    if (sampleRead) {
-      holder.timeUs -= sampleOffsetUs;
+    @Override
+    public MediaFormat getMediaFormat() {
+        return mediaFormat;
     }
-    return sampleRead;
-  }
 
-  @Override
-  public MediaFormat getMediaFormat() {
-    return mediaFormat;
-  }
-
-  @Override
-  public Map<UUID, byte[]> getPsshInfo() {
-    return psshInfo;
-  }
+    @Override
+    public Map<UUID, byte[]> getPsshInfo() {
+        return psshInfo;
+    }
 
 }

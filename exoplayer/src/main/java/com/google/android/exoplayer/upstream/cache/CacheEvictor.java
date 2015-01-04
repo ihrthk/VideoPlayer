@@ -21,14 +21,14 @@ package com.google.android.exoplayer.upstream.cache;
  */
 public interface CacheEvictor extends Cache.Listener {
 
-  /**
-   * Invoked when a writer starts writing to the cache.
-   *
-   * @param cache The source of the event.
-   * @param key The key being written.
-   * @param position The starting position of the data being written.
-   * @param length The maximum length of the data being written.
-   */
-  void onStartFile(Cache cache, String key, long position, long length);
+    /**
+     * Invoked when a writer starts writing to the cache.
+     *
+     * @param cache    The source of the event.
+     * @param key      The key being written.
+     * @param position The starting position of the data being written.
+     * @param length   The maximum length of the data being written.
+     */
+    void onStartFile(Cache cache, String key, long position, long length);
 
 }

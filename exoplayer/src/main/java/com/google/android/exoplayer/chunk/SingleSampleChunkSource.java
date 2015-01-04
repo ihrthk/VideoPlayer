@@ -26,85 +26,85 @@ import java.util.List;
 
 /**
  * A chunk source that provides a single chunk containing a single sample.
- * <p>
+ * <p/>
  * An example use case for this implementation is to act as the source for loading out-of-band
  * subtitles, where subtitles for the entire video are delivered as a single file.
  */
 public class SingleSampleChunkSource implements ChunkSource {
 
-  private final DataSource dataSource;
-  private final DataSpec dataSpec;
-  private final Format format;
-  private final long durationUs;
-  private final MediaFormat mediaFormat;
-  private final TrackInfo trackInfo;
+    private final DataSource dataSource;
+    private final DataSpec dataSpec;
+    private final Format format;
+    private final long durationUs;
+    private final MediaFormat mediaFormat;
+    private final TrackInfo trackInfo;
 
-  /**
-   * @param dataSource A {@link DataSource} suitable for loading the sample data.
-   * @param dataSpec Defines the location of the sample.
-   * @param format The format of the sample.
-   * @param durationUs The duration of the sample in microseconds, or {@link C#UNKNOWN_TIME_US} if
-   *     the duration is unknown.
-   * @param mediaFormat The sample media format. May be null.
-   */
-  public SingleSampleChunkSource(DataSource dataSource, DataSpec dataSpec, Format format,
-      long durationUs, MediaFormat mediaFormat) {
-    this.dataSource = dataSource;
-    this.dataSpec = dataSpec;
-    this.format = format;
-    this.durationUs = durationUs;
-    this.mediaFormat = mediaFormat;
-    trackInfo = new TrackInfo(format.mimeType, durationUs);
-  }
-
-  @Override
-  public TrackInfo getTrackInfo() {
-    return trackInfo;
-  }
-
-  @Override
-  public void getMaxVideoDimensions(MediaFormat out) {
-    // Do nothing.
-  }
-
-  @Override
-  public void enable() {
-    // Do nothing.
-  }
-
-  @Override
-  public void continueBuffering(long playbackPositionUs) {
-    // Do nothing.
-  }
-
-  @Override
-  public void getChunkOperation(List<? extends MediaChunk> queue, long seekPositionUs,
-      long playbackPositionUs, ChunkOperationHolder out) {
-    if (!queue.isEmpty()) {
-      // We've already provided the single sample.
-      return;
+    /**
+     * @param dataSource  A {@link DataSource} suitable for loading the sample data.
+     * @param dataSpec    Defines the location of the sample.
+     * @param format      The format of the sample.
+     * @param durationUs  The duration of the sample in microseconds, or {@link C#UNKNOWN_TIME_US} if
+     *                    the duration is unknown.
+     * @param mediaFormat The sample media format. May be null.
+     */
+    public SingleSampleChunkSource(DataSource dataSource, DataSpec dataSpec, Format format,
+                                   long durationUs, MediaFormat mediaFormat) {
+        this.dataSource = dataSource;
+        this.dataSpec = dataSpec;
+        this.format = format;
+        this.durationUs = durationUs;
+        this.mediaFormat = mediaFormat;
+        trackInfo = new TrackInfo(format.mimeType, durationUs);
     }
-    out.chunk = initChunk();
-  }
 
-  @Override
-  public void disable(List<? extends MediaChunk> queue) {
-    // Do nothing.
-  }
+    @Override
+    public TrackInfo getTrackInfo() {
+        return trackInfo;
+    }
 
-  @Override
-  public IOException getError() {
-    return null;
-  }
+    @Override
+    public void getMaxVideoDimensions(MediaFormat out) {
+        // Do nothing.
+    }
 
-  @Override
-  public void onChunkLoadError(Chunk chunk, Exception e) {
-    // Do nothing.
-  }
+    @Override
+    public void enable() {
+        // Do nothing.
+    }
 
-  private SingleSampleMediaChunk initChunk() {
-    return new SingleSampleMediaChunk(dataSource, dataSpec, format, 0, 0, durationUs, -1,
-        mediaFormat);
-  }
+    @Override
+    public void continueBuffering(long playbackPositionUs) {
+        // Do nothing.
+    }
+
+    @Override
+    public void getChunkOperation(List<? extends MediaChunk> queue, long seekPositionUs,
+                                  long playbackPositionUs, ChunkOperationHolder out) {
+        if (!queue.isEmpty()) {
+            // We've already provided the single sample.
+            return;
+        }
+        out.chunk = initChunk();
+    }
+
+    @Override
+    public void disable(List<? extends MediaChunk> queue) {
+        // Do nothing.
+    }
+
+    @Override
+    public IOException getError() {
+        return null;
+    }
+
+    @Override
+    public void onChunkLoadError(Chunk chunk, Exception e) {
+        // Do nothing.
+    }
+
+    private SingleSampleMediaChunk initChunk() {
+        return new SingleSampleMediaChunk(dataSource, dataSpec, format, 0, 0, durationUs, -1,
+                mediaFormat);
+    }
 
 }

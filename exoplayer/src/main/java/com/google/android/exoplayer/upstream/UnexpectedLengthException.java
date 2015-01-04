@@ -22,24 +22,24 @@ import java.io.IOException;
  */
 public final class UnexpectedLengthException extends IOException {
 
-  /**
-   * The length that was expected, in bytes.
-   */
-  public final long expectedLength;
+    /**
+     * The length that was expected, in bytes.
+     */
+    public final long expectedLength;
 
-  /**
-   * The actual length encountered, in bytes.
-   */
-  public final long actualLength;
+    /**
+     * The actual length encountered, in bytes.
+     */
+    public final long actualLength;
 
-  /**
-   * @param expectedLength The length that was expected, in bytes.
-   * @param actualLength The actual length encountered, in bytes.
-   */
-  public UnexpectedLengthException(long expectedLength, long actualLength) {
-    super("Expected: " + expectedLength + ", got: " + actualLength);
-    this.expectedLength = expectedLength;
-    this.actualLength = actualLength;
-  }
+    /**
+     * @param expectedLength The length that was expected, in bytes.
+     * @param actualLength   The actual length encountered, in bytes.
+     */
+    public UnexpectedLengthException(long expectedLength, long actualLength) {
+        super("Expected: " + expectedLength + ", got: " + actualLength);
+        this.expectedLength = expectedLength;
+        this.actualLength = actualLength;
+    }
 
 }
