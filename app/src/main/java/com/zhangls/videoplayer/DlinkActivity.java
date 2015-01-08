@@ -1,6 +1,9 @@
 package com.zhangls.videoplayer;
 
 import android.app.Activity;
+import android.graphics.SurfaceTexture;
+import android.opengl.GLES11Ext;
+import android.opengl.GLES20;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,8 +37,28 @@ public class DlinkActivity extends Activity {
         SurfaceView videoSurfaceView = (SurfaceView) findViewById(R.id.video);
 //        connect("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3", "admin", "111111",
 //                160, 320, 240, videoSurfaceView);
-      connect("http://192.168.0.110:80/video/mjpg.cgi?profileid=4", "admin", "111111",
-              161, 640, 480, videoSurfaceView);
+        connect("http://192.168.0.110:80/video/mjpg.cgi?profileid=4", "admin", "111111",
+                161, 640, 480, videoSurfaceView);
+
+        makeSurfaceTexture();
+    }
+
+    private SurfaceTexture makeSurfaceTexture() {
+        SurfaceTexture mTexture;
+        int[] mTextureId;
+        int[] textures = new int[1];
+        GLES20.glGenTextures(1, textures, 0);
+
+        mTextureId = textures;
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, mTextureId[0]);
+
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER,
+                GLES20.GL_NEAREST);
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER,
+                GLES20.GL_LINEAR);
+
+        mTexture = new SurfaceTexture(mTextureId[0]);
+        return mTexture;
     }
 
     private void connect(final String uri, final String admin, final String password,
@@ -48,7 +71,7 @@ public class DlinkActivity extends Activity {
                     InputStream inputStream = (InputStream) msg.obj;
                     MediaFrameHolder videoFrameHolder = new MediaFrameHolder();
                     VideoParseThread videoParseThread = new VideoParseThread(inputStream, videoFrameHolder,
-                            parserType, width, height);
+                            parserType, width, height, makeSurfaceTexture());
                     videoParseThread.start();
                     VideoPlayThread videoPlayThread = new VideoPlayThread(videoSurfaceView1, videoFrameHolder);
                     videoPlayThread.start();

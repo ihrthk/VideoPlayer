@@ -1,6 +1,11 @@
 package com.dlink.mydlinkbase;
 
 
+import android.graphics.SurfaceTexture;
+import android.media.MediaCodec;
+import android.media.MediaFormat;
+import android.view.Surface;
+
 import com.dlink.mydlinkbase.media.H264Decoder;
 import com.dlink.mydlinkbase.parser.StreamParserFactory;
 
@@ -8,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 
 public class VideoParseThread extends Thread {
@@ -16,6 +22,10 @@ public class VideoParseThread extends Thread {
 
     private InputStream videoStream;
     private MediaFrameHolder frameHolder;
+
+    private SurfaceTexture surfaceTexture;
+    private Surface surface;
+    private MediaCodec videoDecoder;
 
     private boolean StateRuning = true;
 
@@ -29,7 +39,7 @@ public class VideoParseThread extends Thread {
     private int resolutionWidth;
     private int resolutionHeight;
 
-    public VideoParseThread(InputStream in, MediaFrameHolder videoFrameHolder, int parserType, int width, int height) {
+    public VideoParseThread(InputStream in, MediaFrameHolder videoFrameHolder, int parserType, int width, int height, SurfaceTexture texture) {
         // this.videoStream = new DataInputStream(in);
         this.videoStream = in;
         this.parserType = parserType;
@@ -37,6 +47,7 @@ public class VideoParseThread extends Thread {
         this.resolutionHeight = height;
         this.frameHolder = videoFrameHolder;
         mFrameHeader = new FrameHeader();
+        this.surface = new Surface(texture);
     }
 
 
@@ -58,6 +69,11 @@ public class VideoParseThread extends Thread {
     }
 
     private void get93xH264() {
+
+        ByteBuffer[] inputBuffers = null;
+        ByteBuffer[] outputBuffers = null;
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        byte[] mPixel = null;
         try {
             Thread.sleep(50); // ensure refresh thread run
         } catch (InterruptedException e1) {
@@ -66,9 +82,19 @@ public class VideoParseThread extends Thread {
         synchronized (locker) {
             StreamParser streamParser = StreamParserFactory
                     .getStreamParser(parserType);
-            H264Decoder.InitDecoder(resolutionWidth, resolutionHeight);
 
-            byte[] mPixel = new byte[resolutionWidth * resolutionHeight * 2];
+            try {
+                videoDecoder = MediaCodec.createDecoderByType("video/avc");
+                videoDecoder.configure(MediaFormat.createVideoFormat("video/avc", resolutionWidth, resolutionHeight), surface, null, 0);
+                videoDecoder.start();
+                Loger.i("[[video/avc]] decoder started");
+                inputBuffers = videoDecoder.getInputBuffers();
+                outputBuffers = videoDecoder.getOutputBuffers();
+                mPixel = new byte[resolutionWidth * resolutionHeight * 2];
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             int lostFrameCount = 0;
 
 
@@ -76,11 +102,11 @@ public class VideoParseThread extends Thread {
             long countEnd;
             int count = 0;
             DecimalFormat df = new DecimalFormat("0.0");
-
+            MediaFrame mframe;
             while (StateRuning) {
                 try {
                     lostFrameCount = 0;
-                    MediaFrame mframe = frameHolder.dequeue_free();
+                    mframe = frameHolder.dequeue_free();
                     if (mframe == null) {
                         Loger.d("dequeue_free frame is " + mframe);
                         continue;
@@ -130,6 +156,38 @@ public class VideoParseThread extends Thread {
                     e.printStackTrace();
                     break;
                 }
+
+                if (mframe.getlength() > 0) {
+                    int inIdx = videoDecoder.dequeueInputBuffer(10000);
+                    if (inIdx >= 0) {
+                        ByteBuffer buffer = inputBuffers[inIdx];
+                        buffer.clear();
+                        buffer.put(mframe.getbytes(), 0, mframe.getlength());
+                        buffer.flip();
+                        videoDecoder.queueInputBuffer(inIdx, 0, mframe.getlength(), 0, 0);
+                    }
+
+                    int outIdx = videoDecoder.dequeueOutputBuffer(info, 10000);
+                    switch (outIdx) {
+                        case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
+                            outputBuffers = videoDecoder.getOutputBuffers();
+                            frameHolder.queue_free(mframe);
+                            break;
+                        case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
+                            frameHolder.queue_free(mframe);
+                            break;
+                        case MediaCodec.INFO_TRY_AGAIN_LATER:
+                            frameHolder.queue_free(mframe);
+                            break;
+                        default:
+                            ByteBuffer buffer = outputBuffers[outIdx];
+                            videoDecoder.releaseOutputBuffer(outIdx, true); /* this will render to surface directly */
+                            /* Just a dummy push to video play thread so that it can perform all
+                               other functions other than rendering to surface */
+                            frameHolder.queue_filled(mframe);
+                            break;
+                    }
+                }
             }
 
             try {
@@ -139,11 +197,17 @@ public class VideoParseThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            H264Decoder.UninitDecoder();
+            videoDecoder.stop();
+            videoDecoder.release();
         }
     }
 
     private void getH264() {
+
+        ByteBuffer[] inputBuffers = null;
+        ByteBuffer[] outputBuffers = null;
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+
         try {
             Thread.sleep(50); // ensure refresh thread run
         } catch (InterruptedException e1) {
@@ -152,7 +216,17 @@ public class VideoParseThread extends Thread {
         synchronized (locker) {
             StreamParser streamParser = StreamParserFactory
                     .getStreamParser(parserType);
-            H264Decoder.InitDecoder(resolutionWidth, resolutionHeight);
+            try {
+                videoDecoder = MediaCodec.createDecoderByType("video/avc");
+                videoDecoder.configure(MediaFormat.createVideoFormat("video/avc", resolutionWidth, resolutionHeight), surface, null, 0);
+                videoDecoder.start();
+                Loger.i("[[video/avc]] decoder started");
+                inputBuffers = videoDecoder.getInputBuffers();
+                outputBuffers = videoDecoder.getOutputBuffers();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             byte[] mPixel = new byte[resolutionWidth * resolutionHeight * 2];
             int readFailCount = 0;
             int lostFrameCount = 0;
@@ -164,6 +238,7 @@ public class VideoParseThread extends Thread {
             DecimalFormat df = new DecimalFormat("0.0");
 
             while (StateRuning) {
+                MediaFrame mframe = null;
                 try {
                     if (mFrameHeader.remain > 0) {
                         System.arraycopy(mFrameHeader.buffer, 0, h264Buffer, 0,
@@ -200,7 +275,7 @@ public class VideoParseThread extends Thread {
 
                     if (mFrameHeader.count > 0) {
                         lostFrameCount = 0;
-                        MediaFrame mframe = frameHolder.dequeue_free();
+                        mframe = frameHolder.dequeue_free();
                         if (mframe == null) {
                             Loger.d("dequeue_free frame is " + mframe);
                             streamParser.skipFrame(h264Buffer, readCount,
@@ -258,7 +333,41 @@ public class VideoParseThread extends Thread {
                     e.printStackTrace();
                     break;
                 }
+                if ((mframe != null) && (mframe.getlength() > 0)) {
+                    int inIdx = videoDecoder.dequeueInputBuffer(10000);
+                    if (inIdx >= 0) {
+                        //Loger.w ("QueueInputBuffer with length = " + mframe.getlength());
+                        ByteBuffer buffer = inputBuffers[inIdx];
+                        buffer.clear();
+                        buffer.put(mframe.getbytes(), 0, mframe.getlength());
+                        buffer.flip();
+                        videoDecoder.queueInputBuffer(inIdx, 0, mframe.getlength(), 0, 0);
+                    }
+
+                    int outIdx = videoDecoder.dequeueOutputBuffer(info, 10000);
+                    //Loger.w ("Dequeue output buffer, idx = " + outIdx);
+                    switch (outIdx) {
+                        case MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED:
+                            outputBuffers = videoDecoder.getOutputBuffers();
+                            frameHolder.queue_free(mframe);
+                            break;
+                        case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
+                            frameHolder.queue_free(mframe);
+                            break;
+                        case MediaCodec.INFO_TRY_AGAIN_LATER:
+                            frameHolder.queue_free(mframe);
+                            break;
+                        default:
+                            ByteBuffer buffer = outputBuffers[outIdx];
+                            videoDecoder.releaseOutputBuffer(outIdx, true); /* this will render to surface directly */
+                            /* Just a dummy push to video play thread so that it can perform all
+                               other functions other than rendering to surface */
+                            frameHolder.queue_filled(mframe);
+                            break;
+                    }
+                }
             }
+
 
             try {
                 if (null != videoStream) {
@@ -267,7 +376,8 @@ public class VideoParseThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            H264Decoder.UninitDecoder();
+            videoDecoder.stop();
+            videoDecoder.release();
         }
     }
 
