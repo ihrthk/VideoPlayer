@@ -37,7 +37,6 @@ configurations {
 
 dependencies {
     //    compile project(':mydlinkbase')
-    compile files('libs/android-support-v4.jar')
     ftpAntTask("org.apache.ant:ant-commons-net:1.9.3") {
         module("commons-net:commons-net:1.4.1") {
             dependencies "oro:oro:2.0.8:jar"
