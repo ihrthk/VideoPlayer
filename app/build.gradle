@@ -45,6 +45,8 @@ dependencies {
     }
     compile project(':vitamio')
     compile project(':exoplayer')
+    compile project(':dlink')
+    compile 'com.loopj.android:android-async-http:1.4.6'
 }
 
 task ftp << {

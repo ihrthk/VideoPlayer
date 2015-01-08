@@ -13,6 +13,8 @@ import android.view.SurfaceView;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 
+import zhangls.dlink.stream.parser.StreamParserFactory;
+
 public class VideoPlayThread extends Thread {
     private SurfaceView msurface;
     private MediaFrameHolder frameHolder;
@@ -102,7 +104,7 @@ public class VideoPlayThread extends Thread {
                     showingBitmap = Bitmap.createBitmap(resolutionWidth, resolutionHeight, Config.RGB_565);
                     showingBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(data));
                     // updateThumbnail(showingBitmap);
-                    saveCurrentFrame(showingBitmap);
+//                    saveCurrentFrame(showingBitmap);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     showingBitmap = null;
