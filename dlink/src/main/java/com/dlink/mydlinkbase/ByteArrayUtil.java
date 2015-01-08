@@ -1,4 +1,4 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
 
 public class ByteArrayUtil {
     public static int byteArrayIndexof(byte[] data, byte[] sub, int start) {

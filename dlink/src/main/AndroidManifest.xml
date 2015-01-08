@@ -1,6 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="zhangls.dlink">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dlink.mydlinkbase">
 
-    <application android:allowBackup="true" android:label="@string/app_name"
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
         android:icon="@drawable/ic_launcher">
 
     </application>

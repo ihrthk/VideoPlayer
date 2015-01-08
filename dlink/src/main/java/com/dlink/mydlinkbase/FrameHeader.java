@@ -1,4 +1,4 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
 
 /**
  * Audio & Video Frame Header

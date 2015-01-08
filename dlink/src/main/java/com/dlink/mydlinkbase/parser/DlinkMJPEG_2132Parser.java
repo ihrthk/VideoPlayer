@@ -1,10 +1,10 @@
-package zhangls.dlink.stream.parser;
+package com.dlink.mydlinkbase.parser;
 
-import zhangls.dlink.ByteArrayUtil;
-import zhangls.dlink.FrameHeader;
-import zhangls.dlink.MediaFrame;
-import zhangls.dlink.MediaFrameHolder;
-import zhangls.dlink.StreamParser;
+import com.dlink.mydlinkbase.ByteArrayUtil;
+import com.dlink.mydlinkbase.FrameHeader;
+import com.dlink.mydlinkbase.MediaFrame;
+import com.dlink.mydlinkbase.MediaFrameHolder;
+import com.dlink.mydlinkbase.StreamParser;
 
 public class DlinkMJPEG_2132Parser extends StreamParser {
     private static final byte[] tail = {(byte) 0xFF, (byte) 0xD9};

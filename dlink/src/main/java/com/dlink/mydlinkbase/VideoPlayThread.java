@@ -1,4 +1,4 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,10 +10,10 @@ import android.graphics.Matrix;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.dlink.mydlinkbase.parser.StreamParserFactory;
+
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
-
-import zhangls.dlink.stream.parser.StreamParserFactory;
 
 public class VideoPlayThread extends Thread {
     private SurfaceView msurface;

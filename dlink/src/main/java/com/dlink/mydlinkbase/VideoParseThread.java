@@ -1,12 +1,14 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
+
+
+import com.dlink.mydlinkbase.media.H264Decoder;
+import com.dlink.mydlinkbase.parser.StreamParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
-
-import zhangls.dlink.stream.parser.StreamParserFactory;
 
 public class VideoParseThread extends Thread {
 

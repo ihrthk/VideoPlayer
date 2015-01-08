@@ -1,10 +1,10 @@
-package zhangls.dlink.stream.parser;
+package com.dlink.mydlinkbase.parser;
 
 
-import zhangls.dlink.ByteArrayUtil;
-import zhangls.dlink.FrameHeader;
-import zhangls.dlink.Loger;
-import zhangls.dlink.StreamParser;
+import com.dlink.mydlinkbase.ByteArrayUtil;
+import com.dlink.mydlinkbase.FrameHeader;
+import com.dlink.mydlinkbase.Loger;
+import com.dlink.mydlinkbase.StreamParser;
 
 public class DLinkH264_940Parser extends StreamParser {
 

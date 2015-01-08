@@ -1,8 +1,8 @@
-package zhangls.dlink.stream.parser;
+package com.dlink.mydlinkbase.parser;
 
 
-import zhangls.dlink.Loger;
-import zhangls.dlink.StreamParser;
+import com.dlink.mydlinkbase.Loger;
+import com.dlink.mydlinkbase.StreamParser;
 
 public class StreamParserFactory {
     // videoParser

@@ -1,4 +1,4 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
 
 import java.io.IOException;
 import java.io.InputStream;

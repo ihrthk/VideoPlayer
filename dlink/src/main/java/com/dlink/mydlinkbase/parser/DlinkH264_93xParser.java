@@ -1,12 +1,12 @@
-package zhangls.dlink.stream.parser;
+package com.dlink.mydlinkbase.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import zhangls.dlink.MediaFrame;
-import zhangls.dlink.StreamParser;
-import zhangls.dlink.Utils;
+import com.dlink.mydlinkbase.MediaFrame;
+import com.dlink.mydlinkbase.StreamParser;
+import com.dlink.mydlinkbase.Utils;
 
 public class DlinkH264_93xParser extends StreamParser {
     // little endian

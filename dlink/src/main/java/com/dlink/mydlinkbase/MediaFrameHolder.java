@@ -1,4 +1,4 @@
-package zhangls.dlink;
+package com.dlink.mydlinkbase;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
