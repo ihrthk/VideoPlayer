@@ -8,6 +8,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.Header;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.auth.BasicScheme;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
@@ -50,8 +57,8 @@ public class VideoViewBuffer extends Activity implements
        * Alternatively,for streaming media you can use
        * mVideoView.setVideoURI(Uri.parse(URLstring));
        */
-            uri = Uri.parse(path);
-            mVideoView.setVideoURI(uri);
+            uri = Uri.parse("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3");
+            mVideoView.setVideoURI(uri, getHeaders());
             mVideoView.setMediaController(new MediaController(this));
             mVideoView.requestFocus();
             mVideoView.setOnInfoListener(this);
@@ -65,6 +72,15 @@ public class VideoViewBuffer extends Activity implements
             });
         }
 
+    }
+
+    public Map<String,String> getHeaders(){
+        HashMap<String, String> headers = new HashMap<>();
+        Header header = BasicScheme.authenticate(
+                new UsernamePasswordCredentials("admin", "111111"),
+                "UTF-8", false);
+        headers.put(header.getName(),header.getValue());
+        return headers;
     }
 
     @Override
