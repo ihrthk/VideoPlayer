@@ -1,10 +1,8 @@
 package zhangls.dlink;
 
-public class H264Decoder
-{
+public class H264Decoder {
 
-    static
-    {
+    static {
         System.loadLibrary("H264Android");
     }
 

@@ -6,6 +6,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 
+import zhangls.dlink.stream.parser.StreamParserFactory;
+
 public class VideoParseThread extends Thread {
 
     private final static int CONTENT_LOST_COUNT_CONENT_LIMIT = 60;

@@ -52,6 +52,10 @@ public abstract class StreamParser {
     public void readHeader(FrameHeader header, byte[] buffer) {
     }
 
+    public void readHeader(FrameHeader header, byte[] buffer, int width, int height) {
+
+    }
+
 
     public boolean readSystemHeader(InputStream audioStream, FrameHeader header)
             throws IOException {
