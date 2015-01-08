@@ -57,7 +57,7 @@ public class VideoViewBuffer extends Activity implements
        * Alternatively,for streaming media you can use
        * mVideoView.setVideoURI(Uri.parse(URLstring));
        */
-            uri = Uri.parse("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3");
+            uri = Uri.parse(path);
             mVideoView.setVideoURI(uri, getHeaders());
             mVideoView.setMediaController(new MediaController(this));
             mVideoView.requestFocus();
