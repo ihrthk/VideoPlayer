@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
-import com.google.android.exoplayer.VideoSurfaceView;
+import android.view.SurfaceView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -26,18 +25,20 @@ import zhangls.dlink.VideoPlayThread;
  */
 public class DlinkActivity extends Activity {
 
-    VideoSurfaceView videoSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dlink_view);
 
-        videoSurfaceView = (VideoSurfaceView) findViewById(R.id.video);
-        connect("http://172.18.195.49:80/video/ACVS-H264.cgi?profileid=2", 0, 2, 2);
+        SurfaceView videoSurfaceView = (SurfaceView) findViewById(R.id.video);
+//        connect("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3", "admin", "111111", 160, 320, 240);
+        connect("http://192.168.0.110:80/video/mjpg.cgi?profileid=4", "admin", "111111",
+                161, 640, 480, videoSurfaceView);
     }
 
-    private void connect(final String uri, final int parserType, final int width, final int height) {
+    private void connect(final String uri, final String admin, final String password,
+                         final int parserType, final int width, final int height, final SurfaceView videoSurfaceView1) {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -48,7 +49,7 @@ public class DlinkActivity extends Activity {
                     VideoParseThread videoParseThread = new VideoParseThread(inputStream, videoFrameHolder,
                             parserType, width, height);
                     videoParseThread.start();
-                    VideoPlayThread videoPlayThread = new VideoPlayThread(videoSurfaceView, videoFrameHolder);
+                    VideoPlayThread videoPlayThread = new VideoPlayThread(videoSurfaceView1, videoFrameHolder);
                     videoPlayThread.start();
                 }
             }
@@ -70,7 +71,7 @@ public class DlinkActivity extends Activity {
 //                    String basicAuth = "basic  " + Base64.encodeToString(userpass.getBytes("UTF-8"), Base64.DEFAULT);
 //                    httpGet.addHeader("Authorization", basicAuth);
                     httpGet.addHeader(BasicScheme.authenticate(
-                            new UsernamePasswordCredentials("admin", "111111"),
+                            new UsernamePasswordCredentials(admin, password),
                             "UTF-8", false));
                     httpResponse = new DefaultHttpClient().execute(httpGet);
                     StatusLine statusLine = httpResponse.getStatusLine();

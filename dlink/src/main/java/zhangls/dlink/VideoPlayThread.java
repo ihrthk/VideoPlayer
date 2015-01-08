@@ -213,7 +213,7 @@ public class VideoPlayThread extends Thread {
                     showingBitmap = BitmapFactory.decodeByteArray(data, 0,
                             frameLen, opts);
                     // updateThumbnail(showingBitmap);
-                    saveCurrentFrame(showingBitmap);
+//                    saveCurrentFrame(showingBitmap);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     showingBitmap = null;
@@ -229,7 +229,7 @@ public class VideoPlayThread extends Thread {
                     c = holder.lockCanvas();
                     c.drawColor(Color.BLACK);
                     if (mRun) {
-                        c.drawBitmap(showingBitmap, null, null);
+                        c.drawBitmap(showingBitmap, new Matrix(), null);
                     }
 
                     countNullTimes = 0;
