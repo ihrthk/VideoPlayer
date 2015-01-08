@@ -6,6 +6,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.SurfaceView;
 
+import com.dlink.mydlinkbase.MediaFrameHolder;
+import com.dlink.mydlinkbase.VideoParseThread;
+import com.dlink.mydlinkbase.VideoPlayThread;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,10 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import zhangls.dlink.MediaFrameHolder;
-import zhangls.dlink.VideoParseThread;
-import zhangls.dlink.VideoPlayThread;
 
 /**
  * Created by BSDC-ZLS on 2015/1/7.
@@ -32,9 +32,10 @@ public class DlinkActivity extends Activity {
         setContentView(R.layout.dlink_view);
 
         SurfaceView videoSurfaceView = (SurfaceView) findViewById(R.id.video);
-//        connect("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3", "admin", "111111", 160, 320, 240);
-        connect("http://192.168.0.110:80/video/mjpg.cgi?profileid=4", "admin", "111111",
-                161, 640, 480, videoSurfaceView);
+//        connect("http://192.168.0.110:80/video/ACVS-H264.cgi?profileid=3", "admin", "111111",
+//                160, 320, 240, videoSurfaceView);
+      connect("http://192.168.0.110:80/video/mjpg.cgi?profileid=4", "admin", "111111",
+              161, 640, 480, videoSurfaceView);
     }
 
     private void connect(final String uri, final String admin, final String password,
