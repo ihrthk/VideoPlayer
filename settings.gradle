@@ -1,1 +1,2 @@
 include ':app', ':vitamio', ':exoplayer', ':dlink', ':exo_demo', ':vitamio-sample'
+include ':mediaCodecDemo'
