@@ -1,1 +1,1 @@
-include ':app', ':vitamio', ':exoplayer', ':dlink', ':exo_demo'
+include ':app', ':vitamio', ':exoplayer', ':dlink', ':exo_demo', ':vitamio-sample'
