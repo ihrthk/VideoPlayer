@@ -74,12 +74,12 @@ public class VideoViewBuffer extends Activity implements
 
     }
 
-    public Map<String,String> getHeaders(){
+    public Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         Header header = BasicScheme.authenticate(
                 new UsernamePasswordCredentials("admin", "111111"),
                 "UTF-8", false);
-        headers.put(header.getName(),header.getValue());
+        headers.put(header.getName(), header.getValue());
         return headers;
     }
 
