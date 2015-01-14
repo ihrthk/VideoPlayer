@@ -28,7 +28,7 @@ public class VideoViewBuffer extends Activity implements
      * TODO: Set the path variable to a streaming video URL or a local media file
      * path.
      */
-    private String path = "http://live.3gv.ifeng.com/zixun.m3u8";
+    private String path = "http://mofunsky-video.qiniudn.com/90/193/2014082012541850633.webm";
     private Uri uri;
     private VideoView mVideoView;
     private ProgressBar pb;

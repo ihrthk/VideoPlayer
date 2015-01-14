@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
     }
 
     public void exoplayer(View view) {
-
+        startActivity(new Intent(this, MyExoplayer.class));
     }
 
     public void dlink(View view) {
