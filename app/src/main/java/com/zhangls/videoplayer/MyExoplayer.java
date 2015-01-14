@@ -90,9 +90,17 @@ public class MyExoplayer extends Activity {
 
             }
         }, 1);
+        // 1. Instantiate the player.
         ExoPlayer exoplayer = ExoPlayer.Factory.newInstance(1);
+        // 2. Construct renderers.
         TrackRenderer videoRender = new MediaCodecVideoTrackRenderer(videoSampleSource, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+        // 3. Inject the renderers through prepare
         exoplayer.prepare(videoRender);
+        // 4. Pass the surface to the video renderer.
+        exoplayer.sendMessage(videoRender, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE,
+                surface);
+        // 5. Start playback.
+        exoplayer.setPlayWhenReady(true);
     }
 
 
