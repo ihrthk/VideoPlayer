@@ -24,6 +24,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * TODO
+ * 1.兼容dlink h264格式
+ * 2.ptz
+ * 3.横竖屏切换
+ * 4.视频流切换
+ * 5.截屏/拍照
+ * 6.音频
+ * 7.eptz
+ * 8.google统计
  * Created by BSDC-ZLS on 2015/1/7.
  */
 public class DlinkActivity extends Activity {
